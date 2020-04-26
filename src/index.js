@@ -1,18 +1,22 @@
-const express = require('express');
-const logger = require('morgan');
-const bodyParser = require('body-parser');
-const app = express();
+const app = require('express')();
+const getNotices = require('./utils/get-info-notice');
+const getNotice_notice = require('./utils/get-notice');
 
-app.use(logger('dev'));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.get('/' , async (req , res) => {
+  let notices = await getNotices(1);
+  res.json({notices : notices});
+});
 
-app.set('view engine', 'pug');
-app.set('views', __dirname+'/views');
+app.get('/:indx' , async (req , res) => {
+  let notices = await getNotices(req.params.indx);
+  res.json({notices : notices});
+});
 
-app.use(require('./routes'));
+app.get('/noticias/:link' , async (req, res) => {
+  let notice = await getNotice_notice(req.params.link);
+  res.json(notice);
+});
 
 app.listen(8081 , () => {
-  console.log('rodando');
-  
+  console.log('http://localhost:8081');
 });
